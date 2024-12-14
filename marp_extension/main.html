@@ -1,0 +1,72 @@
+<style>
+  /* 受け取ったメッセージを表示するためのスタイル */
+  .message {
+    position: absolute;
+    top: 40px; /* 画面下部に表示 */
+    white-space: nowrap;
+    font-size: 24px;
+    color: white;
+    text-shadow: 2px 2px 4px black; /* 黒い縁 */
+    animation: slideIn 10s linear forwards; /* アニメーションを適用 */
+  }
+
+  /* 右から左に移動するアニメーション */
+  @keyframes slideIn {
+    0% {
+      right: -100%; /* 初期位置（画面外右） */
+    }
+    100% {
+      right: 100%; /* 最終位置（画面外左） */
+    }
+  }
+</style>
+<script>
+  const ws = new WebSocket("ws://127.0.0.1:9001");
+
+  // 接続が確立した時
+  ws.addEventListener("open", () => {
+    console.log("WebSocket 接続が確立しました");
+  });
+
+  // メッセージを受信した時
+  ws.addEventListener("message", (event) => {
+    console.log("サーバーからのメッセージ:", event.data);
+    let jsonarray = JSON.parse(event.data);
+    let string = "";
+    for (let i = 0; i < jsonarray.length; i++) {
+      string += jsonarray[i].toString();
+      string += "<br>";
+      string += "&nbsp;".repeat(i * 10);
+    }
+    displayMessage(string);
+  });
+
+  // エラーが発生した時
+  ws.addEventListener("error", (error) => {
+    console.error("WebSocket エラー:", error);
+  });
+
+  // 接続が閉じられた時
+  ws.addEventListener("close", () => {
+    console.log("WebSocket 接続が閉じられました");
+  });
+  // メッセージをHTML要素として表示
+  // メッセージをHTML要素として表示
+  function displayMessage(message) {
+      const container = document.getElementById(':$p');
+
+      // 新しいメッセージ要素を作成
+      const messageElement = document.createElement('div');
+      messageElement.classList.add('message');
+      messageElement.innerHTML = message;
+
+      // アニメーション終了時に要素を削除
+      messageElement.addEventListener('animationend', () => {
+        messageElement.remove(); // アニメーション終了後に要素を削除
+      });
+
+      // メッセージ要素を親要素に追加
+      container.appendChild(messageElement);
+    }
+
+</script>

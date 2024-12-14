@@ -1,0 +1,21 @@
+{
+    "manifest_version": 3,
+    "name": "Domain Specific Logger",
+    "version": "1.0",
+    "permissions": [
+        "scripting"
+    ],
+    "host_permissions": [
+        "https://app.sli.do/event/*/live/questions"
+    ],
+    "content_scripts": [
+        {
+            "matches": [
+                "https://app.sli.do/event/*/live/questions"
+            ],
+            "js": [
+                "main.js"
+            ]
+        }
+    ]
+}
